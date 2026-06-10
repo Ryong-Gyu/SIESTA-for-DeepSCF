@@ -616,13 +616,14 @@ C     Modules
       use sys,           only  : die, bye
       use mesh,          only  : nsm, nsp, meshLim
       use parsing
-      use m_iorho,       only  : write_rho
+      use m_iorho,       only  : write_rho, read_rho
       use m_forhar,      only  : forhar
       use alloc,         only  : re_alloc, de_alloc
       use files,         only  : slabel
       use files,         only  : filesOut_t ! derived type for output file names
       use siesta_options, only : harrisfun, save_initial_charge_density
       use siesta_options, only : analyze_charge_density_only
+      use siesta_options, only : read_charge, read_charge_fix
       use meshsubs,       only : LocalChargeOnMesh
       use meshsubs,       only : PartialCoreOnMesh
       use meshsubs,       only : NeutralAtomOnMesh
@@ -900,6 +901,11 @@ C ----------------------------------------------------------------------
       else if (read_charge_cdf) then
          call read_grid_netcdf(ntm(1:3),nspin,ntpl,DRho,"Rho")
          read_charge_cdf = .false.
+      else if (read_charge) then
+         call read_rho('In.RHO',cell,ntm,nsm,ntpl,nspin,DRho) ! predicted rho
+         if ( .not. read_charge_fix) then
+             read_charge = .false.
+         endif
       else if (read_deformation_charge_cdf) then
          call read_grid_netcdf(ntm(1:3),nspin,ntpl,DRho,"DeltaRho")
          ! Add to diagonal components only

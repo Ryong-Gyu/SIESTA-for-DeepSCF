@@ -1,0 +1,63 @@
+#(1) General system descriptors
+
+SystemName            Solid  # Descriptive name of the system
+SystemLabel           Solid  # Short name for naming files
+%include STRUCT.fdf
+%include KPT.fdf
+%include BASIS.fdf
+#%include TS.fdf # for transiesta calculation
+
+#(4) DFT, Grid, SCF
+
+XC.functional         LDA           # LDA or GGA (default = LDA)
+XC.authors            CA           # CA (Ceperley-Aldr) = PZ
+                                    #    (Perdew-Zunger) - LDA - Default
+                                    # PW92 (Perdew-Wang-92) - LDA
+                                    # PBE (Perdew-Burke-Ernzerhof) - GGA
+MeshCutoff            500.00 Ry     # Default: 50.0 Ry ~ 0.444 Bohr
+                                    #         100.0 Ry ~ 0.314 Bohr
+DM.MixingWeight       0.25          # Default: 0.25
+DM.NumberPulay        20            # Default: 0
+DM.PulayOnFile        F             # SystemLabel.P1, SystemLabel.P2
+DM.Tolerance          1.d-4         # Default: 1.d-4
+DM.UseSaveDM          .true.        # because of the bug
+NeglNonOverlapInt     F             # Default: F
+#DM.MixSCF1            T
+#TS.CalcGF             F             # Default: T
+
+#(5) Eigenvalue problem: order-N or diagonalization
+
+SolutionMethod        Diagon        # or Transiesta
+ElectronicTemperature 300.0 K       # Default: 300.0 K
+
+
+#(6) Molecular dynamics and relaxations
+
+MD.TypeOfRun          CG            # Type of dynamics:
+MD.VariableCell       F 
+MD.NumCGsteps         0         # 0 for single-point / 100 for gopt
+MD.MaxCGDispl         0.2 Bohr      # Default: 0.2 Bohr
+MD.MaxForceTol        0.01  eV/Ang   # Default: 0.04 eV/Ang
+MD.MaxStressTol       0.1 GPa       # Default: 1.0 GPa
+
+
+
+#(7) Options for saving/reading information
+#SaveHS                T      # SystemLabel.HS
+SaveRho               T      # SystemLabel.RHO, rho2xsf(3D),macroave-charge dendity(1D)
+#SaveDeltaRho          T      # SystemLabel.DRHO
+#SaveElectrostaticPotential T # SystemLabel.VH , macroave-potential
+#SaveNeutralAtomPotential T
+#SaveTotalPotential    T      # SystemLabel.VT
+
+
+
+#(8) Non-SCF calculation with predicted rho
+MaxSCFIterations      0           # Default: 50
+SCFMustConverge       .false.
+User.Basis            .true.
+SCF.Read.Charge       .true.
+SCF.Read.Charge.Fix   .true.
+
+
+

@@ -556,7 +556,13 @@
 !     Note that this call will no longer overwrite H while computing the
 !     final energies, forces and stresses...
 
-      if (fdf_get("compute-forces",.true.)) then
+!     Non-scf calculcation
+      if (nscf .eq. 0) then
+        call setup_hamiltonian( iscf )
+        call post_scf_work( istep, iscf , SCFconverged )
+        call compute_dm( iscf )
+        call compute_energies(iscf)
+      else if (fdf_get("compute-forces",.true.)) then
          call post_scf_work( istep, iscf , SCFconverged )
 #ifdef SIESTA__PEXSI
          if (ionode) call memory_snapshot("after post_scf_work")

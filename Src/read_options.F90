@@ -1510,6 +1510,10 @@ subroutine read_options( na, ns, nspin )
   writedmhs_cdf         = fdf_get('WriteDMHS.NetCDF', .false. )
   writedmhs_cdf_history = fdf_get('WriteDMHS.History.NetCDF', .false.)
   read_charge_cdf       = fdf_get('SCF.Read.Charge.NetCDF' , .false. )
+  read_charge           = fdf_get('SCF.Read.Charge' , .false. )
+  read_charge_fix       = fdf_get('SCF.Read.Charge.Fix' , .true. )
+
+
   read_deformation_charge_cdf = &
        fdf_get('SCF.Read.Deformation.Charge.NetCDF', .false. )
 

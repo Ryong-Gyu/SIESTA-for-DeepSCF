@@ -121,6 +121,9 @@ MODULE siesta_options
   logical :: writedmhs_cdf_history   ! Write file with SCF history in netCDF form?
   logical :: read_charge_cdf   ! Read charge density from file in netCDF form?
   logical :: read_deformation_charge_cdf   ! Read deformation charge density from file in netCDF form?
+  logical :: read_charge       ! Read charge density from file in unformatted grid file form?
+  logical :: read_charge_fix   ! Fix the read charge density for every scf step?
+
 !
   logical :: save_initial_charge_density ! Just save the initial charge density used
   logical :: analyze_charge_density_only ! Exit dhscf after processing charge

@@ -1,0 +1,44 @@
+%YAML 1.2
+---
+
+siesta:
+  version: "4.1.5"
+  arch: "x86_64-unknown-linux-gnu--unknown"
+  compiler: "ifort (IFORT) 2021.9.0 20230302"
+  fflags: "mpiifort -g -O2 -fPIC -xSSE4.2 -fp-model source"
+  fppflags: "-DFC_HAVE_FLUSH -DFC_HAVE_ABORT -DMPI  -DCDF -DNCDF -DNCDF_4"
+  libs: "libncdf.a libfdict.a -Wl,--start-group /opt/intel/oneapi/mkl/2022.1.0/lib/inttel64/libmkl_scalapack_lp64.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_intel_lp64.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_core.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_sequential.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_blacs_intelmpi_lp64.a -Wl,--end-group -lpthread   /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_blas95_lp64.a -Wl,--start-group /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_intel_lp64.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_sequential.a /opt/intel/oneapi/mkl/2022.1.0/lib/intel64/libmkl_core.a -Wl,--end-group -L/home2/rong/opt/netcdf_build/build/build/netcdf/4.4.1.1/lib -L/home2/rong/opt/netcdf_build/build/build/netcdf/4.4.1.1/lib -L/home2/rong/opt/netcdf_build/build/build/hdf5/1.8.19/lib -L/home2/rong/opt/netcdf_build/build/build//zlib/1.2.11/lib /home2/rong/opt/netcdf_build/build/build/netcdf/4.4.1.1/lib/libnetcdff.a /home2/rong/opt/netcdf_build/build/build/netcdf/4.4.1.1/lib/libnetcdf.a /home2/rong/opt/netcdf_build/build/build/hdf5/1.8.19/lib/libhdf5_hl.a /home2/rong/opt/netcdf_build/build/build/hdf5/1.8.19/lib/libhdf5.a /home2/rong/opt/netcdf_build/build/build//zlib/1.2.11/lib/libz.a -lcurl -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lz"
+  build: "mpi"
+  openmp: "no"
+  gemm3m: "no"
+  netcdf: "yes"
+  netcdf4: "yes"
+  netcdf4_mpi: "no"
+  metis: "no"
+  chess: "no"
+  elpa: "no"
+  flook: "no"
+  pexsi: "no"
+
+energies:
+  Ebs:          -0.64425889E+01
+  Eions:           0.27985254E+02
+  Ena:           0.87499467E+01
+  Ekin:           0.59717666E+01
+  Enl:           0.20742474E+01
+  Eso:           0.00000000E+00
+  Edftu:           0.00000000E+00
+  DEna:           0.74218824E-01
+  DUscf:           0.29342418E-01
+  DUext:           0.00000000E+00
+  Exc:          -0.47673774E+01
+  Ecorrec:           0.00000000E+00
+  Emadel:           0.00000000E+00
+  Emeta:           0.00000000E+00
+  Emolmec:           0.00000000E+00
+  Ekinion:           0.00000000E+00
+  Eharris:          -0.15853110E+02
+  Etot:          -0.15853110E+02
+  FreeEng:          -0.15853110E+02
+
+...

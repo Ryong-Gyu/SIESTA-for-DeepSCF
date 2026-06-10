@@ -38,6 +38,7 @@ CONTAINS
       use fdf,             only: fdf_get
       use siesta_options,  only: g2cut, Temp
       use siesta_options,  only: mix_charge, mixH
+      use siesta_options,  only: read_charge
       use sparse_matrices, only: listh, listhptr, numh, maxnh
       use sparse_matrices, only: H
       use sparse_matrices, only: Dscf, Dold
@@ -127,6 +128,10 @@ CONTAINS
       else if (mixH) then
          ! not needed
       else if (mix_charge) then
+         call compute_correct_EKS()
+      endif
+
+      if (read_charge) then
          call compute_correct_EKS()
       endif
 
