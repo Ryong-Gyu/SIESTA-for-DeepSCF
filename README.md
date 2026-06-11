@@ -7,7 +7,7 @@ The original codebase is based on [*SIESTA 4.1.5*](https://departments.icmab.es/
 
 ## Features
 
-### (1) Post-SCF calculations
+### (1) Single-shot Khon-Sham calculations
 
 These extensions enable SIESTA to read an external charge-density file and use it as the input density for a non-SCF or single-shot calculation.
 
