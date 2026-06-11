@@ -123,6 +123,7 @@ MODULE siesta_options
   logical :: read_deformation_charge_cdf   ! Read deformation charge density from file in netCDF form?
   logical :: read_charge       ! Read charge density from file in unformatted grid file form?
   logical :: read_charge_fix   ! Fix the read charge density for every scf step?
+  logical :: save_new_feature  ! Save input features?
 
 !
   logical :: save_initial_charge_density ! Just save the initial charge density used

@@ -100,6 +100,7 @@ OBJS =  automatic_cell.o atom_options.o \
 	projected_DOS.o propor.o m_partial_charges.o \
 	randomg.o reclat.o redcel.o \
 	reinit.o reord.o reordpsi.o rhoofd.o rhoofdsp.o rhooda.o \
+	rhoov.o kindens.o grddens.o \
 	savepsi.o shaper.o timer_tree.o timer.o \
 	vmb.o vmat.o vmatsp.o volcel.o \
         cgvc.o cgvc_zmatrix.o m_convergence.o \
@@ -1214,6 +1215,9 @@ rhoofd.o: alloc.o atm_types.o atmfuncs.o atomlist.o listsc.o m_spin.o mesh.o
 rhoofd.o: meshdscf.o meshphi.o parallel.o parallelsubs.o precision.o sys.o
 rhoofdsp.o: alloc.o atm_types.o atmfuncs.o atomlist.o listsc.o mesh.o
 rhoofdsp.o: meshdscf.o meshphi.o parallel.o precision.o sys.o
+rhoov.o: atmfuncs.o atomlist.o mesh.o meshphi.o precision.o
+kindens.o: atmfuncs.o atomlist.o mesh.o meshphi.o precision.o
+grddens.o: atmfuncs.o atomlist.o mesh.o meshphi.o precision.o
 save_density_matrix.o: atomlist.o class_SpData2D.o files.o iodm_netcdf.o
 save_density_matrix.o: m_energies.o m_iodm.o m_matio.o m_ncdf_siesta.o m_spin.o
 save_density_matrix.o: m_steps.o m_ts_global_vars.o m_ts_iodm.o m_ts_options.o

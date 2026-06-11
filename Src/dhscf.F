@@ -116,6 +116,9 @@
       use m_ts_electype,  only : Elec_ortho2semi_inf
       use m_ts_voltage,   only : ts_init_voltage
 
+      use siesta_options, only : save_new_feature
+      use m_iorho,        only : write_rho
+
       implicit none
       integer, intent(in)     :: nspin, norb, iaorb(norb), iphorb(norb),
      &                           nuo, nuotot, nua, na, isa(na),
@@ -144,6 +147,18 @@
       ! Transport direction (unit-cell aligned)
       integer                 :: iE
       logical :: is_ortho
+
+! new feature  =======================================================
+      integer                 :: ip
+      real(grid_p), pointer   :: kin(:), rhoover(:), grd(:,:),
+     &                           grdtot(:), kintot(:),
+     &                           kinueg(:), kinvw(:),
+     &                           alpha(:), elf(:),
+     &                           grdx(:), grdy(:), grdz(:)
+      real(grid_p), pointer   :: fsrc(:), fdst(:)
+      real(dp) :: PI
+      real(dp) :: rhotot, aux
+!====================================================================
 !--------------------------------------------------------------------- BEGIN
 #ifdef DEBUG
       call write_debug( '    PRE dhscf_init' )
@@ -501,6 +516,210 @@ C ----------------------------------------------------------------------
         ! calculation?
          
       end if
+
+
+
+! Save new features
+
+      if (save_new_feature) then
+
+        nullify( rhoover )
+        nullify( kin, grd, kintot, grdtot )
+        nullify( kinueg, kinvw, elf, alpha)
+        nullify( grdx, grdy, grdz )
+
+
+        ! (0) Calcualte atomic and overlap density
+
+        call write_rho( 'rhoatom', cell, ntm, nsm, ntpl, 1, rhoatm )
+
+
+        call re_alloc( rhoover, 1, ntpl, 'rhoover','dhscf')
+        if (nodes.gt.1) then
+             call setMeshDistr( QUADRATIC, nsm, nsp,
+     &                          nml, nmpl, ntml, ntpl )
+        endif
+        call re_alloc( rhoatm_par, 1, ntpl, 'rhoatm_par','dhscf' )
+
+        call rhoov( norb, nmpl, datm, rhoatm_par, iaorb, iphorb, isa )
+
+
+C       Set the UNIFORM distribution again and copy DRho to it
+        if (nodes.gt.1) then
+           call setMeshDistr( UNIFORM, nsm, nsp, nml, nmpl, ntml, ntpl )
+        endif
+
+        ! Sequential to be able to write it out
+        ! if nodes==1, this call will just reorder
+        call distMeshData( QUADRATIC, rhoatm_par,
+     &                     UNIFORM, rhoover, TO_SEQUENTIAL )
+
+        call de_alloc( rhoatm_par, 'DRho_par','dhscf' )
+        call write_rho('rhoover', cell, ntm, nsm, ntpl, 1, rhoover)
+        call de_alloc( rhoover, 'rhoover', 'dhscf' )
+
+! -------
+! Kinetic energy density analysis
+! -------
+
+! (1) Gradient density
+
+         call re_alloc( grdx, 1, ntpl, 'grdx', 'dhscf' )
+         call re_alloc( grdy, 1, ntpl, 'grdy', 'dhscf' )
+         call re_alloc( grdz, 1, ntpl, 'grdz', 'dhscf' )
+         call re_alloc( grdtot, 1, ntpl, 'grdtot', 'dhscf' )
+
+         if (nodes.gt.1) then
+               call setMeshDistr( QUADRATIC, nsm, nsp,
+     &                            nml, nmpl, ntml, ntpl )
+         endif
+
+         call re_alloc( grd, 1, 3, 1, ntpl, 'grd', 'dhscf')
+
+         call grddens( norb, nmpl, datm, grd, iaorb, iphorb, isa )
+
+         ! Gradient density along x-axis
+         fsrc => grd(1,:)
+         fdst => grdx(:)
+         call distMeshData( QUADRATIC, fsrc,
+     &                      UNIFORM, fdst, TO_SEQUENTIAL )
+
+         ! Gradient density along y-axis
+         fsrc => grd(2,:)
+         fdst => grdy(:)
+         call distMeshData( QUADRATIC, fsrc,
+     &                      UNIFORM, fdst, TO_SEQUENTIAL )
+
+         ! Gradient density along z-axis
+         fsrc => grd(3,:)
+         fdst => grdz(:)
+         call distMeshData( QUADRATIC, fsrc,
+     &                      UNIFORM, fdst, TO_SEQUENTIAL )
+
+         call de_alloc ( grd, 'grd', 'dhscf')
+
+         if (nodes.gt.1) then
+           call setMeshDistr( UNIFORM, nsm, nsp,
+     &                        nml, nmpl, ntml, ntpl )
+         endif
+
+
+         grdtot(:) = 0.0_grid_p
+         do ip = 1, ntpl
+            grdtot(ip) = grdtot(ip) +
+     &                    (grdx(ip)**2.0_dp +
+     &                     grdy(ip)**2.0_dp +
+     &                     grdz(ip)**2.0_dp)**0.5_dp
+         enddo
+
+         call write_rho('grd',cell,ntm,nsm,ntpl,1,grdtot)
+         call de_alloc( grdx, 'grdx', 'dhscf' )
+         call de_alloc( grdy, 'grdy', 'dhscf' )
+         call de_alloc( grdz, 'grdz', 'dhscf' )
+
+
+! (2) Kinentic energy density
+! J. Chern. Phys., Vol. 92. No.9, 1 May 1990
+
+! positive-definite kinetic energy density (unit: Hartree)
+
+         call re_alloc( kintot, 1, ntpl, 'kintot', 'dhscf' )
+
+         if (nodes.gt.1) then
+               call setMeshDistr( QUADRATIC, nsm, nsp,
+     &                            nml, nmpl, ntml, ntpl )
+         endif
+
+         call re_alloc( kin, 1, ntpl, 'kin', 'dhscf')
+
+         call kindens( norb, nmpl, datm, kin, iaorb, iphorb, isa )
+
+         ! Sequential to be able to write it out
+         ! if nodes==1, this call will just reorder
+         call distMeshData( QUADRATIC, kin,
+     &                      UNIFORM, kintot, TO_SEQUENTIAL )
+
+         call de_alloc ( kin, 'kin', 'dhscf')
+
+         if (nodes.gt.1) then
+!          Everything back to UNIFORM, sequential
+           call setMeshDistr( UNIFORM, nsm, nsp,
+     &                        nml, nmpl, ntml, ntpl )
+         endif
+
+         call write_rho('tau',cell,ntm,nsm,ntpl,1,kintot)
+
+! Uniform electron gas kinetic energy density (unit: Hartree)
+         call re_alloc(kinueg, 1, ntpl, 'kinueg','dhscf')
+
+         kinueg(:) = 0.0_grid_p
+         PI = 4*ATAN(1.0_dp)
+
+         do ip = 1, ntpl
+             rhotot = rhoatm(ip) ! 2 * rho_sigma (non-pol)
+             if ( rhotot .gt. tiny ) then
+               kinueg(ip) =(3.0_dp/10.0_dp) *
+     &                       (3.0_dp * PI**2.0_dp)**(2.0_dp/3.0_dp) *
+     &                       rhotot**(5.0_dp/3.0_dp)
+             else
+               kinueg(ip) = 0.0_dp
+             endif
+         enddo
+
+         call write_rho('tau_tf',cell,ntm,nsm,ntpl,1,kinueg)
+
+! von Weiszacker kinetic (unit: Hartree)
+         call re_alloc(kinvw, 1, ntpl, 'kinvw','dhscf')
+
+         kinvw(:) = 0.0_dp
+         do ip = 1, ntpl
+             rhotot = rhoatm(ip) ! 2 * rho_sigma (non-pol)
+             if ( rhotot .gt. tiny ) then
+               kinvw(ip) = (1.0_dp/8.0_dp) * grdtot(ip)**2.0_dp
+     &                     / rhotot
+             else
+               kinvw(ip) = 0.0_dp
+             endif
+         enddo
+
+         call write_rho('tau_vw',cell,ntm,nsm,ntpl,1,kinvw)
+         call de_alloc( grdtot, 'grdtot', 'dhscf' )
+
+! Alpha
+         call re_alloc(alpha, 1, ntpl,'alpha','dhscf')
+         alpha(:) = 0.0_dp
+
+         do ip = 1, ntpl
+            if ( kinueg(ip) .gt. tiny ) then
+              alpha(ip) = alpha(ip) +
+     &          abs(kintot(ip)/2.0_dp - kinvw(ip)) /
+     &             (kinueg(ip))
+            else
+              alpha(ip) = 1.0_dp / tiny
+            endif
+         enddo
+
+         call write_rho('alpha',cell,ntm,nsm,ntpl,1,alpha)
+
+! ELF
+         call re_alloc(elf, 1, ntpl, 'elf','dhscf')
+         elf(:) = 0.0_dp
+         do ip = 1, ntpl
+             elf(ip) = elf(ip) +
+     &                       1 / ( 1.0_dp + alpha(ip)**2.0_dp )
+         enddo
+
+         call write_rho('elf',cell,ntm,nsm,ntpl,1,elf)
+
+         call de_alloc( kinvw, 'kintot', 'dhscf' )
+         call de_alloc( kinueg, 'grdtot', 'dhscf' )
+         call de_alloc( kintot, 'kintot', 'dhscf' )
+         call de_alloc( alpha, 'alpha', 'dhscf' )
+         call de_alloc( elf, 'elf', 'dhscf' )
+
+         save_new_feature = .false.
+
+      endif ! new save_new_feature
 
       frstme = .false.
 
@@ -1168,6 +1387,7 @@ C ----------------------------------------------------------------------
      &       DRho, "DeltaRho")
 #endif
       endif
+
 
       if (present(charge_density_only)) then 
          if (charge_density_only) then

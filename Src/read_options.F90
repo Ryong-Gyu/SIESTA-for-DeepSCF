@@ -1512,6 +1512,7 @@ subroutine read_options( na, ns, nspin )
   read_charge_cdf       = fdf_get('SCF.Read.Charge.NetCDF' , .false. )
   read_charge           = fdf_get('SCF.Read.Charge' , .false. )
   read_charge_fix       = fdf_get('SCF.Read.Charge.Fix' , .true. )
+  save_new_feature      = fdf_get('SaveNewFeature' , .false. )
 
 
   read_deformation_charge_cdf = &
