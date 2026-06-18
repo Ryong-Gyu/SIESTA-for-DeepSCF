@@ -53,3 +53,12 @@ SaveRho               T      # SystemLabel.RHO, rho2xsf(3D),macroave-charge dend
 #SaveElectrostaticPotential T # SystemLabel.VH , macroave-potential
 #SaveNeutralAtomPotential T
 #SaveTotalPotential    T      # SystemLabel.VT
+
+
+BandLinesScale ReciprocalLatticeVectors
+%block BandLines
+  1    0.50000 0.500000 0.50000  L
+  50   0.00000 0.000000 0.00000  G
+  50   0.50000 0.000000 0.50000  X
+%endblock BandLines
+

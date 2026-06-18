@@ -60,4 +60,10 @@ SCF.Read.Charge       .true.
 SCF.Read.Charge.Fix   .true.
 
 
+BandLinesScale ReciprocalLatticeVectors
+%block BandLines
+  1    0.50000 0.500000 0.50000  L
+  50   0.00000 0.000000 0.00000  G
+  50   0.50000 0.000000 0.50000  X
+%endblock BandLines
 

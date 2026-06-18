@@ -243,6 +243,7 @@ WriteDMHS.History.NetCDF              F     # default value
 SCF.Read.Charge.NetCDF              F     # default value
 SCF.Read.Charge              T
 SCF.Read.Charge.Fix              T
+SaveNewFeature              F     # default value
 SCF.Read.Deformation.Charge.NetCDF              F     # default value
 Write.TSHS.History              F     # default value
 SaveInitialChargeDensity              F     # default value
@@ -329,10 +330,26 @@ Diag.AbsTol         0.1000000000E-15     # default value
 Diag.OrFac         0.1000000000E-05     # default value
 Diag.Memory          1.000000000         # default value
 #:block? ProjectedDensityOfStates              F
-#:block? BandLines              F
-#:defined? BandLines              F
+#:block? BandLines              T
+#:defined? BandLines              T
 #:block? BandPoints              F
 #:defined? BandPoints              F
+BandLinesScale     ReciprocalLatticeVectors                                                        
+%block BandLines
+   1    0.50000 0.500000 0.50000  L
+   50   0.00000 0.000000 0.00000  G
+   50   0.50000 0.000000 0.50000  X
+%endblock BandLines
+#:block? BandLines              T
+#:defined? BandLines              T
+#:block? BandPoints              F
+#:defined? BandPoints              F
+BandLinesScale     ReciprocalLatticeVectors                                                        
+%block BandLines
+   1    0.50000 0.500000 0.50000  L
+   50   0.00000 0.000000 0.00000  G
+   50   0.50000 0.000000 0.50000  X
+%endblock BandLines
 LongOutput              F     # default value
 WriteWaveFunctions              F     # default value
 #:block-line-count? MetaForce (iirrr)   0
@@ -369,5 +386,6 @@ OccupationFunction     FD     # default value
 Read-H-from-file              F     # default value
 WriteCoorXmol              F     # default value
 WriteCoorCerius              F     # default value
+WFS.Write.For.Bands              F     # default value
 BasisPressure         0.2000000000     GPa     # default value
 OpticalCalculation              F     # default value

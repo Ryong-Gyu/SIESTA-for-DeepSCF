@@ -13,11 +13,13 @@ XC.authors            CA           # CA (Ceperley-Aldr) = PZ
                                     # PBE (Perdew-Burke-Ernzerhof) - GGA
 MeshCutoff            500.00 Ry     # Default: 50.0 Ry ~ 0.444 Bohr
                                     #         100.0 Ry ~ 0.314 Bohr
+MaxSCFIterations      500           # Default: 50
 DM.MixingWeight       0.25          # Default: 0.25
 DM.NumberPulay        20            # Default: 0
 DM.PulayOnFile        F             # SystemLabel.P1, SystemLabel.P2
 DM.Tolerance          1.d-4         # Default: 1.d-4
 DM.UseSaveDM          .true.        # because of the bug
+SCFMustConverge       .true.
 NeglNonOverlapInt     F             # Default: F
 #DM.MixSCF1            T
 #TS.CalcGF             F             # Default: T
@@ -31,16 +33,17 @@ MD.NumCGsteps         0         # 0 for single-point / 100 for gopt
 MD.MaxCGDispl         0.2 Bohr      # Default: 0.2 Bohr
 MD.MaxForceTol        0.01  eV/Ang   # Default: 0.04 eV/Ang
 MD.MaxStressTol       0.1 GPa       # Default: 1.0 GPa
-#(7) Options for saving/reading information
+User.Basis            T
+#(10) Options for saving/reading information
 #SaveHS                T      # SystemLabel.HS
 SaveRho               T      # SystemLabel.RHO, rho2xsf(3D),macroave-charge dendity(1D)
 #SaveDeltaRho          T      # SystemLabel.DRHO
 #SaveElectrostaticPotential T # SystemLabel.VH , macroave-potential
 #SaveNeutralAtomPotential T
 #SaveTotalPotential    T      # SystemLabel.VT
-#(8) Non-SCF calculation with predicted rho
-MaxSCFIterations      0           # Default: 50
-SCFMustConverge       .false.
-User.Basis            .true.
-SCF.Read.Charge       .true.
-SCF.Read.Charge.Fix   .true.
+BandLinesScale ReciprocalLatticeVectors
+%block BandLines
+  1    0.50000 0.500000 0.50000  L
+  50   0.00000 0.000000 0.00000  G
+  50   0.50000 0.000000 0.50000  X
+%endblock BandLines

@@ -10,14 +10,14 @@ NetCDF support
 NetCDF-4 support
 
 * Running on 12 nodes in parallel
->> Start of run:  10-JUN-2026  21:25:49
+>> Start of run:  18-JUN-2026  22:39:48
 
                            ***********************       
                            *  WELCOME TO SIESTA  *       
                            ***********************       
 
 reinit: Reading from standard input
-reinit: Dumped input in INPUT_TMP.58964
+reinit: Dumped input in INPUT_TMP.27319
 ************************** Dump of input data file ****************************
 #(1) General system descriptors
 SystemName            Solid  # Descriptive name of the system
@@ -65,6 +65,12 @@ SCFMustConverge       .false.
 User.Basis            .true.
 SCF.Read.Charge       .true.
 SCF.Read.Charge.Fix   .true.
+BandLinesScale ReciprocalLatticeVectors
+%block BandLines
+  1    0.50000 0.500000 0.50000  L
+  50   0.00000 0.000000 0.00000  G
+  50   0.50000 0.000000 0.50000  X
+%endblock BandLines
 ************************** End of input data file *****************************
 
 reinit: -----------------------------------------------------------------------
@@ -187,6 +193,10 @@ diag: Used triangular part                          = Lower
 diag: Absolute tolerance                            =  0.100E-15
 diag: Orthogonalization factor                      =  0.100E-05
 diag: Memory factor                                 =  1.0000
+Using current reciprocal lattice vectors for BandLinesScale
+Beware any cell changes by the end of the run
+Using current reciprocal lattice vectors for BandLinesScale
+Beware any cell changes by the end of the run
 
 superc: Internal auxiliary supercell:     5 x     5 x     5  =     125
 superc: Number of atoms, orbitals, and projectors:    250   3250   4000
@@ -305,6 +315,7 @@ siesta: Atomic forces (eV/Ang):
 Stress tensor Voigt[x,y,z,yz,xz,xy] (kbar):      825.98      825.98      825.98        0.00        0.00        0.00
 (Free)E + p*V (eV/cell)     -236.5009
 Target enthalpy (eV/cell)     -215.6942
+Computing bands...
 
 siesta: Program's energy decomposition (eV):
 siesta: Ebs     =       -87.656576
@@ -363,5 +374,5 @@ cite: which are encouraged to be cited in a published work.
         Primary SIESTA paper
           DOI: www.doi.org/10.1088/0953-8984/14/11/302
  
->> End of run:  10-JUN-2026  21:26:08
+>> End of run:  18-JUN-2026  22:40:08
 Job completed

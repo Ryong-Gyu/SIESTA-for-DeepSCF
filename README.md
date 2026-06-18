@@ -25,7 +25,16 @@ SCFMustConverge       .false.
 User.Basis            .true.
 SCF.Read.Charge       .true.
 SCF.Read.Charge.Fix   .true.
-```
+```  
+
+To see how this works, refer to `Tests/read_rho`, which compares the results of conventional SCF and non-SCF calculations using an externally supplied charge density:  
+
+**Band structure comparison**  
+
+<p align="center">
+  <img height="240" src="./Figs/Figure 1.png"/>
+</p>
+
 
 ### (2) Generate grid-projected input features
 
